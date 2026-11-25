@@ -12,11 +12,11 @@ export async function fetchDocuments() {
 /**
  * Non-streaming chat - waits for full answer. Useful for simple testing.
  */
-export async function askQuestion(message) {
+export async function askQuestion(message, source = null) {
   const res = await fetch(`${API_BASE}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, source }),
   });
   if (!res.ok) throw new Error("Chat request failed");
   const data = await res.json();
@@ -29,11 +29,11 @@ export async function askQuestion(message) {
  * GET requests, and our endpoint needs POST (to send the question body).
  * So we manually read the response stream and parse SSE "data: ..." lines.
  */
-export async function askQuestionStream(message, onToken, onDone) {
+export async function askQuestionStream(message, onToken, onDone, source = null) {
   const res = await fetch(`${API_BASE}/api/chat/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, source }),
   });
 
   if (!res.ok || !res.body) throw new Error("Streaming chat request failed");
